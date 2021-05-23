@@ -2,7 +2,7 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable,   :omniauthable, omniauth_providers: %i[facebook]
+         :recoverable, :rememberable, :validatable,   :omniauthable, omniauth_providers: [:facebook, :google_oauth2]
   def self.new_with_session(params, session)
     super.tap do |user|
       if data = session["devise.facebook_data"] && session["devise.facebook_data"]["extra"]["raw_info"]
@@ -20,6 +20,16 @@ class User < ApplicationRecord
     # If you are using confirmable and the provider(s) you use validate emails,
     # uncomment the line below to skip the confirmation emails.
     # user.skip_confirmation!
+    end
+  end
+
+  def self.create_from_provider_data(provider_data)
+    where(email: provider_data.info.email).first_or_create do |user|
+      user.email = provider_data.info.email
+      user.password = Devise.friendly_token[0, 20]
+      # user.name = provider_data.info.last_name
+      user.provider = provider_data.provider
+      user.uid = provider_data.uid
     end
   end
 end

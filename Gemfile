@@ -28,10 +28,10 @@ gem 'jbuilder', '~> 2.7'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
 
-gem 'devise'
+gem "devise", github: "heartcombo/devise"
 
 gem 'omniauth'
-gem 'omniauth-google'
+gem 'omniauth-google-oauth2'
 gem 'omniauth-facebook'
 gem 'figaro'
 group :development, :test do
